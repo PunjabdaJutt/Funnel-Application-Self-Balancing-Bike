@@ -1,0 +1,716 @@
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.01cm]{geometry}
+%\usepackage[a4paper, total={16.5cm, 25cm}]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{rotating}
+\usepackage{array,multirow}
+\usepackage{pdfpages}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage[toc,page]{appendix}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{url}
+\usepackage{gensymb}
+\setlength{\parindent}{0pt}
+\usepackage{bm}
+\usepackage{footmisc}
+\usepackage{subfig}
+\usepackage{parskip}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\DeclareMathOperator{\sinc}{sinc}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{cleveref}
+%\usepackage[capitalise]{cleveref}
+\usepackage{comment}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{external}
+
+%\renewcommand{\notesname}{References}
+%\renewcommand\makeenmark{\textsuperscript{[\theenmark]}}
+%\patchcmd{\theendnotes}
+%  {\makeatletter}
+%  {\makeatletter\renewcommand\makeenmark{[\theenmark] }}
+%  {}{}
+
+
+%%% Matlab stuffs
+\usepackage[procnames]{listings}
+
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\usepackage{hyperref}
+%\newtheorem{definition}[theorem]{Definition}
+\usepackage{color}
+\usepackage[scaled=.8]{sourcecodepro}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle, language=Matlab}
+%%%
+
+
+%%%Custom commands for better looking title page
+
+\usepackage{anyfontsize}
+\usepackage{setspace}
+
+\newcommand{\textBF}[1]{%
+    \pdfliteral direct {2 Tr 1 w} %the second factor is the boldness
+     #1%
+    \pdfliteral direct {0 Tr 0 w}%
+}
+
+\newcommand{\textDF}[1]{%
+    \pdfliteral direct {2 Tr 0.2 w} %the second factor is the boldness
+     #1%
+    \pdfliteral direct {0 Tr 0 w}%
+}
+
+
+\title{Self Balancing Motorbike using
+Funnel Controller}
+\author{Niek Fikkers, S3278204\\
+Swathi Krishnanunni - s5931266\\
+        Ammar Akhlaq Ahmed - s6113613\\
+
+
+
+\begin{document}
+
+
+\begin{titlepage}
+\thispagestyle{empty}
+\title{
+\includegraphics[width=19cm]{Images/banner (1) (2).png} \\
+\vspace{3cm}
+\begingroup
+\setstretch{4}\fontsize{38}{10}\selectfont\fontdimen2\font=0.8ex
+\parbox{16.5cm}{\textBF{Self Balancing Motorbike using Funnel Controller}} %%Title
+
+
+\vspace{6 cm} % Reduce the vertical space if needed
+
+\begin{center}
+    \Large
+    \setlength{\baselineskip}{16pt} % Tighten vertical spacing
+    Niek Fikkers - S3278204\\
+    Swathi Krishnanunni - S5931266\\
+    Ammar Akhlaq Ahmed - S6113613
+\end{center}
+
+
+\endgroup}
+\date{}
+\author{}
+\maketitle
+
+\end{titlepage}
+\newpage
+\newgeometry{top=1in,bottom=1in,right=0.9in,left=0.9in} %Needed because margins were changed for titlepage
+
+
+%\maketitle
+
+%\begin{figure}[h!]
+%\centering
+%\captionsetup{justification=centering,margin=0.1cm}
+%\includegraphics[width= 0.7 \linewidth]%{Images/rijksuniversiteit_Groningen.jpg}
+%\label{RUG}
+%\end{figure}
+
+
+
+\newpage
+\phantomsection
+\section*{Abstract}
+% More or less a summary/ introduction that is short
+This report investigates the application of funnel control for real-time stabilization of a self-balancing motorcycle equipped with a flywheel. The system's objective is to regulate the roll (tilt) angle of the motorcycle to asymptotically track a zero reference, corresponding to the upright equilibrium position. A model-free, nonlinear funnel controller is employed to guarantee that the tracking error remains strictly within a predefined, time-varying performance (the funnel), despite uncertainties in system dynamics and external disturbances. The proposed controller adapts without requiring explicit knowledge of the motorcycle’s full dynamics, relying only on real-time measurements of the tilt angle. By using a  feedback mechanism, where control effort rises as the error gets closer to the funnel boundary, the control mechanism guarantees the performance requirements. In this report we have formulated the theory required for the experimental knowledge, modeling of the system and experimental validation which proves the robustness and effectiveness of the funnel control Mechanism in making bounded-error convergence and maintaining stability.
+
+
+
+\newpage
+{
+  \hypersetup{linkcolor=black}
+  \tableofcontents
+}
+
+
+
+
+\newpage
+\section{Introduction}
+% Three parts
+% 1) introduction for research question
+% 2) how it is answered, what has been done
+% 3) "one" sentence summary of ech chapter
+When a two-wheeled vehicle is subjected to external forces, maintaining balance becomes a difficult control issue due to perturbations and nonlinear behavior. This project concentrates on the creation and implementation of a funnel Controller. A flywheel is used by the controller to maintain the stability of a self-balancing motorbike. The tilt angle is controlled by the motorcycle when it is stationary or moving slowly, allowing it to remain upright, through the torque produced by a rotating flywheel.\\
+
+
+The funnel controller is different from conventional control strategies, which does not need the model of the system. An adaptive control approach that doesn't use a model and ensures that the tracking error falls within a given time-varying range. The boundary is referred to as the funnel. Because of this, it is especially appropriate for uncertain systems like where specific characteristics of our motorbike, such as moment of inertia, damping, or disruptions, may be hard to ascertain either measure or forecast precisely.\\
+
+A traditional Proportional Derivative (PD) controller is used in addition to the funnel controller to ensure the motorcycle's  stability. The PD controller is in charge of producing corrective inputs to the DC motor based on the measured tilt angle and its rate of change. The system maintains a steady torque by constantly monitoring the tilt angle and making adjustments as needed. The PD controller attempts to minimize both steady-state and transient errors by modifying the control input in accordance with the present error. Its simplicity, ease of implementation, and real-time response make it a easy option for early testing  thus making the  PD controller a benchmark for comparison.\\
+
+The tilt angle (roll angle) of the motorcycle is the output of interest in this application, and the reference signal is representing the ideal vertical posture as zero. The tilt angle is maintained within the specified range by the funnel controller. A shrinking boundary with time that permits early transients but enforces high long-term performance. The theoretical understanding of the funnel control, a little bit of PID, modelling of self-balancing bike and the experimental findings are all covered in this report.
+
+
+\newpage
+\section{System Overview}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.66\linewidth]{Images/Screenshot 2025-06-18 at 11.22.39 AM.png}
+    \caption{The bike that was used in this report to generate the data.}
+    \label{graph}
+\end{figure}
+
+
+
+The primary objective is to regulate the motorcycle's tilt angle using a flywheel torque and maintain an upright posture under slight disturbances.The system consists of the following key components:\\
+
+The flywheel acts as the balance correction actuator, makes up the flywheel mechanism. Using this torque, the system is effectively stabilised.\\
+
+Inertial Measurement Unit (IMU) detects the motorbike's real-time tilt angle and its angular velocity. \\
+
+ The motor communicates with the flywheel motor to precisely regulate its rotational speed and torque output. \\
+ 
+Servo Motor (Steering) improves the directional stability of the front wheel which is coupled to a servo motor. \\
+
+
+
+\newpage
+\section{Equations of motion} \label{Equations of motion}
+
+A PID or Funnel controller does not require the system dynamics to achieve its goal. However, the equations of motion will provide us with an insight into the dynamics of the system. Most importantly, it will provide us with the relative degree of the system. Namely, the Funnel controller implemented in Section \ref{Funnel Controller} is for systems of relative degree $2$.
+\\
+
+To derive the equations of motion the bike is considered to be a pendulum with an attached flywheel. Consider Figure \ref{bike EOM} in which the back of the bike can be seen. The variables $\theta$ and $\omega$ are defined, where the arrows for both denote the positive direction. The capital letters A,B,C and D denote in respective order, the axis of rotation for the pendulum, center of mass of the pendulum, center of mass and axis of rotation of the flywheel and lastly the end of the pendulum. The pendulum and the flywheel are considered to have a uniform and equal density.
+
+In practice the point at which the bike is in balance is never exactly at $\theta = 0 \text{ rad}$, but slightly deviated from this point. This amount is referred to as the bias in this report.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Images/Bike pick.png}
+    \caption{The back view of the bike with the definitions of the variables $\theta$ and $\omega$. The capital letters A,B,C and D denote in respective order, the axis of rotation for the combined system, center of mass of the combined system, center of mass and axis of rotation of the flywheel and lastly the end of the pendulum. (This image has been corrected and the original comes from \cite{arduino documentation}.) }
+    \label{bike EOM}
+\end{figure}
+
+Let's start with the equation describing the movement of the pendulum (rod). For this we use $\sum \tau = I \ddot{\theta}$,
+
+$$
+\tau_{r} + \tau_{f} + \tau_{m} = (I_r^A + I_f^A) \ddot{\theta},
+$$
+where $\tau_{r}$ is the torque coming from gravity acting on the pendulum (rod), \\ 
+$\tau_{f}$ is the torque comes from gravity acting on the flywheel, \\
+$\tau_{m}$ is the torque generated by the DC motor, \\
+$I_r^A$ is the moment of inertia of the pendulum (rod) when rotating around point A and \\
+$I_f^A$ is the moment of inertia of the flywheel when rotating around point A.
+The moments of inertia can be found in Appendix \ref{moi}.
+
+Secondly, we have the equation describing the movement of the flywheel.
+$$
+\tau_m = I_f^C (\dot{\omega} + \ddot{\theta}),
+$$
+where $I_f^C$ is the moment of inertia of the flywheel when rotating around point C.
+
+We can write these equations into the following state space model
+
+\begin{align} \label{statespace}
+    \dot{x}(t) &= 
+\begin{bmatrix}
+\dot{\theta} \\
+\ddot{\theta} \\
+\dot{\omega}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\dot{\theta} \\
+\frac{\tau_{r} + \tau_{f} + u(t)}
+{I_r^A + I_f^A} \\
+\frac{u(t)}{I_f^C} - \ddot{\theta}
+\end{bmatrix} \\
+y(t) &= \theta(t),
+\end{align}
+with $u(t) = \tau_m$.
+The equations with all the terms explicitly determined can be found in Appendix \ref{moi}.
+Observe that taking $2$ time derivatives of the output $y(t)$ gives us an expression that contains the input $u(t)$. This is relevant for the funnel controller discussed in Section \ref{Funnel}, as we have a system of relative degree $2$ .
+
+\newpage
+\section{Filter} \label{Filter}
+
+It is important to have good measurements coming from the IMU, as these will be used in the controller. In Figure \ref{filtering}, a graph of the measured $\dot{\theta}$ can be seen along with the filtered $\dot{\theta}$. This was done in an attempt to make the bike more stable and avoid spike in the inputs send to the DC motor. The time span in the graph is a rather short $1$ s but this is because it takes less than approximately $0.5$ s to go from $\theta = 0 \text{ rad}$ to $\theta = 0.24 \text{ rad} \approx 14^o$. At this (arbitrarily chosen) angle the bike is considered fallen over in a safety mechanism. This angle is larger than the angle (exact angle is unknown) from which the bike can put itself back to $\theta = 0$.
+
+However, no change in behaviour was noticed, but also no rigorous tests were done besides simply observing the bike balancing with and without the filter. This filter is used for all the tests described in this report.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Images/Filtering thetadot.png}
+    \caption{Filtering of $\dot{\theta}$, using a moving average of the last $3$ values. During this period the bike was in balance using the PDP controller (Section \ref{PD(P) Controller}) and had a flywheel speed of $\omega \approx 21 \text{ rad/s}$.}
+    \label{filtering}
+\end{figure}
+
+In Figure \ref{filtering extreme} an extreme case is shown where the flywheel is spinning very fast (relatively speaking). This causes more and larger vibrations than observed in Figure \ref{filtering}, also notice that the scale of the y axis has been changed. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Images/Filtering thetadot extreme.png}
+    \caption{Filtering of $\dot{\theta}$, using a moving average of the last $3$ values. During this period the bike was \textbf{not} in balance and was kept physically in place. It had an extreme flywheel speed of $\omega \approx -425 \text{ rad/s}$. Also notice that magnitude of the y axis has tripled with respect to Figure \ref{filtering}.}
+    \label{filtering extreme}
+\end{figure}
+
+
+\newpage
+\section{PD(P) Controller} \label{PD(P) Controller}
+
+Let's start with a feedback controller (PD Controller), where we considered the output to be the angular position $y(t) = \theta(t)$, just like discussed in Section \ref{Equations of motion}. The generic input equation of a PID controller is
+
+  \begin{align*}
+      u(t) &= K_p ( y(t) - y_{ref}(t) ) + K_i \int_0^t ( y(\tau) - y_{ref}(\tau) ) d\tau + K_d \frac{d}{dt} ( y(t) - y_{ref}(t) ).  \\
+  \end{align*}
+The reference output value is taken to be $y_{ref}(t) = 0$ and no integral term is used in the control input resulting in
+\begin{equation} \label{PD}
+    u(t) =  K_p \theta(t) + K_d \dot{\theta}(t). 
+\end{equation}
+
+However, in practice this input for the fly wheel motor only keeps the bike upright for a couple of seconds. In Figure \ref{unstable PD controller} the $3$ state space variables ($\theta$, $\dot{\theta}$ and $\omega$) can be seen over time. Here the bike is briefly in balance but meanwhile the flywheel's angular velocity increases linearly. This is because when the measured angle $\theta = 0$ the bike is not necessarily exactly in balance, i.e. there is a bias. Thus requiring a constant acceleration of the fly wheel to keep the bike in balance. This is problematic as the flywheel has a maximum velocity at which point the DC motor can no longer generate a torque in the direction of the velocity.\cite{arduino documentation}
+(DC motors have the characteristic that their torque decreases linearly as the angular velocity increases, see Figure \ref{DC motor linear} in Appendix \ref{DC motor appendix}.)
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Images/Unbounded Flywheel speed PD.png}
+    \caption{A briefly balancing bike using the PD controller (\ref{PD}), where the angular velocity grows linearly until the generated amount of torque becomes too small to keep it in balance and it falls. The bike has been moved (by hand) close to the equilibrium point to start the balancing.}
+    \label{unstable PD controller}
+\end{figure}
+
+
+The unbounded angular velocity $\omega$ of the flywheel can be mitigated by introducing $\omega$ into the controller function (making it a PDP controller).\cite{arduino documentation}
+
+\begin{equation} \label{PDP}
+      u(t) = K_p \theta(t)  + K_d \dot{\theta}(t)  + K_{\omega} \omega(t)
+\end{equation}
+
+In Figure \ref{stable PDP controller} the states of the system can be seen along with the "bounded" $\omega$ and observe that the system remains in balance. For the sake of making an easy comparison, the same y axis has been used in Figure \ref{unstable PD controller} and \ref{stable PDP controller}. \\
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Images/Bounded Flywheel Speed.png}
+    \caption{A balancing bike using the PDP controller (\ref{PDP}), where the angular velocity becomes almost constant with respect to Figure \ref{unstable PD controller}. Also note that this remains in balance after it has been moved (by hand) close to the equilibrium point.}
+    \label{stable PDP controller}
+\end{figure}
+
+In Figure \ref{PDP control components} the individual components of $u(t)$, namely $K_p\theta(t)$, $K_d \dot{\theta}(t)$ and $K_{\omega}\omega(t)$ are plotted over time to show each components' contribution in keeping the bike in balance. Observe that $K_{\omega}\omega(t)$ acts as a dynamic bias to counteract the term $K_p\theta(t)$. The data shown comes from the same test that generated Figure \ref{stable PDP controller}.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Images/The PDP input terms.png}
+    \caption{The individual components of $u(t)$, namely $K_p\theta(t)$, $K_d \dot{\theta}(t)$ and $K_{\omega}\omega(t)$ plotted over time. The data shown comes from the same test that generated Figure \ref{stable PDP controller} and has the same colour legend.}
+    \label{PDP control components}
+\end{figure}
+
+The parameters used in the test that generated the graphs shown in this section can be found in Appendix \ref{constants PD(P) appendix}.
+
+\newpage
+\section{Funnel Controller} \label{Funnel Controller}
+The main goal was to apply the funnel to the self balancing bike, we will be attaching a Simulink file as well and a tutorial on how we constructed the funnel in Simulink and the foresight behind it, the tutorial can be removed or kept by the professor to his liking.\\ We will first look into the used equations used for the relative degree 2 funnel.
+
+
+\subsection{Degree 2 Funnel} \label{Degree 2 Funnel}
+In principle the Funnel controller works similar to the PID but the gains are adaptively bounded. The control objective of the Funnel controller is to track the error:
+\begin{align}
+    e=y-y_{ref}
+\end{align}  
+which in our case is the $\theta$.\\
+ and its derivative:
+\begin{align}
+    \dot{e}=\dot{y}-\dot{y}_{ref}
+\end{align} 
+which is $\dot{\theta}$.\\
+The terms $y_{ref}$ \& $\dot{y}_{ref}$ are set to zero which means that we want our self balancing bike to be upright with minimal movement of the flywheel.\\
+\newline
+The control is achieved by the funnel controller
+\begin{align}
+     u(t) = -K_0(t)^2 e(t) - k_1(t)\dot{e}(t).
+\end{align}
+
+Now we look at the respective funnel boundaries for e \& $\dot{e}$,\\
+
+$$k_0=\frac{\varphi(t)}{1-\varphi(t)|e(t)|}$$
+and
+$$k_1=\frac{\varphi(t)}{1-\varphi(t)|\dot{e}(t)|}.$$
+
+These are the two high upper gain boundaries for e $\&$ $\dot{e}$. Displaying one for simplicity below.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Images/upper boundary of funnel.png}
+    \caption{Upper boundary for theta for continuity the second graph also has the upper boundary.}
+    \label{Funnel}
+\end{figure}
+\newpage
+We shall also look at the respective high gain with relation to the upper boundary again using the parameters of $\theta$ and its respective adaptive gain. One thing to note is that as $\theta$ arrives in close proximity to the boundary it can be seen in Figure \ref{k_gain} that the gain has now jumped to very large negative numbers.\cite{novel 2 stage funnel} \cite{second order}\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Images/upper boundary and respective highgain.png}
+    \caption{This is the gain for $K_0$ with respect to the values of theta and its funnel boundary.}
+    \label{k_gain}
+\end{figure}
+
+ What this means is that when these values approach the boundary the corresponding gain rises inversely to counteract the system to remain in the boundary giving the flywheel an ever increasing input as seen in Figure \ref{Funnel out with respect to theta and funnel boundary}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\linewidth]{Images/funnel.png}
+    \caption{The Funnel output in orange with theta in green and funnel upper boundary purple this graph.}
+    \label{Funnel out with respect to theta and funnel boundary}
+\end{figure}
+The Figure illustrates that as $\theta$ approaches the boundary there must be a maximal input the system can adhere to, hence there must be a input saturation applied.\\
+
+\subsection{Tuning the Funnel boundaries}
+
+The minimum value for the Funnel boundaries that we measured were $+/-0.16$ as seen in Figure \ref{Funnel out with respect to theta and funnel boundary} where the purple line dictates the upper boundary. Though initially it may seem like the boundary is not near the $\theta$ the system is perturbing from zero we see that the funnel output is quite large when compared to both the other values. We first started off with keeping the boundary as large as possible $0.4$- then transitioned to lower the boundaries up until $0.16$. at a lower boundary like $0.1$ the system then becomes too sensitive to perturbations and can be see in Figure \ref{comparison Funnel with lower boundary}. When Figure \ref{comparison Funnel with lower boundary} is compared to \ref{Funnel out with respect to theta and funnel boundary} it is easily be observed that changing the funnel boundary from $0.16$ to $0.1$ the funnel will now be unstable. One thing to note is that the scale is larger in Figure \ref{comparison Funnel with lower boundary} when compared to \ref{Funnel out with respect to theta and funnel boundary}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Images/funnel comparison.png}
+    \caption{Funnel comparison with much lower boundary closer to theta}
+    \label{comparison Funnel with lower boundary}
+\end{figure}
+
+
+\newpage
+
+\subsection{Simulink application of the Funnel} \label{Degree 1 Funnel}
+The application to Simulink in hindsight was fairly simple we will be providing the exact techniques in the appendix. The structure of the funnel will be discussed and the exact design will be placed in the appendix.\\
+We wanted to combine both funnel and PDP control together using a parallel structure, and the result we obtained was an unstable system where the funnel controller and PDP control were working in parallel to balance the system. It can be seen that very small perturbations can cause the system to destabilize after many seconds of unstable balancing. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Images/funnel vs pid2.png}
+    \caption{Funnel in orange and PID in blue.}
+    \label{Funnel and PID}
+\end{figure}
+
+
+\subsection{Problems faced with the funnel} \label{Problems faced with the Funnel}
+
+The issues posed with the funnel were: 
+\begin{itemize}
+    \item The proposed funnel must be of relative degrees higher than 2 supposedly 4. Where we consider the dynamics of the motor, i.e. from the electrical signal to inertia.
+    \item  Bike motor limitations with funnel: The adaptive gain are insufficient for output so the limitations lie within the ability of the motor to balance for high gains. 
+\end{itemize}
+\newpage 
+
+\section{Conclusion} \label{conclusion}
+% Repeat research question and NO new info
+
+
+This implementation of the funnel controller for the self-balancing motorcycle demonstrated the system’s ability to maintain upright under small disturbances for a small time frame then it would destabilize. Using the controller the tilt angle of the bike was regulated through the torque on the flywheel making the motorcycle balance. Though the theory says the funnel control works better than the classical controller and the ability to tolerate larger disturbances are better for the funnel, we were not able to establish this using the experimental results. Practical limitations such as noise, uncertainty in the relative degree may have contributed to the gap between this theoretical and observed performance.
+Nevertheless, the funnel controller provided a stable and adaptive response without requiring a model of the system, making its potential for control applications in nonlinear systems.\\
+
+
+
+
+
+\section{Future Scope} \label{Future Scope}
+% How can this experiment be improved?
+% Are there any follow up experiments that should be done?
+\begin{itemize}
+     
+
+\item Implementing a higher relative degree due to motor dynamics will be necessary in order for the funnel to bound the output with the existing funnels. \\
+
+\item Better understanding of input saturation and understanding of the system dynamics will be a must in order to continue applying the funnel for future projects.\\
+
+\item For the application of model Reference control it can be implemented for relatively better control of the bike. This reference can also be applied to the funnel controller so as opposed to using a constant block 0 for both e and $\dot{e}$.\\
+
+\item Instead of PDP, using a PID the \textbf{I} term will remove the need to change the bias for every bike and surface. If this responds fast enough to changes in the bias it can be used to keep the bike in balance when taking turns at speeds where the centrifugal force becomes significant.
+
+\end{itemize}
+
+% References--------------------------------------------------------------------
+
+% \bibitem{citename}
+% name writer
+% \textit{title book}
+% chapter x
+% publisher. place. ISBN. year.
+% References------------------------------------------------------------------
+\newpage
+\begin{thebibliography}{9}
+
+
+
+\bibitem{novel 2 stage funnel}
+J. Hu, S. Trenn, X. Zhu.
+\textit{A novel two stages funnel controller limiting the error derivative.}
+Systems \& Control Letters, vol. 179, pp. 105601, 2023.
+
+\bibitem{book with funnel chapter}
+ C.M. Hackl.
+ \textit{Non-Identifier Based Adaptive Control in Mechatronics–Theory and Application}.
+ Lecture Notes in Control and Information Sciences, vol.
+ 466, Springer-Verlag, Cham, Switzerland, 2017.
+ \url{http://dx.doi.org/10.1007/978-3-319-55036-7}.
+ 
+
+\bibitem{arduino documentation}
+Arduino Education. Arduino Engineering Kit Rev2. Retrieved April 16, 2025. \url{https://edu-content-preview.arduino.cc/content-preview/university/project/CONTENTPREVIEW+AEKR2}
+
+\bibitem{second order}
+Hackl, C.M., Hopfe, N., Ilchmann, A., Mueller, M., \& Trenn, S. \textit{Funnel control for systems with relative degree two}. SIAM Journal on Control and Optimization, vol. 51, no. 2, pp. 965–995, 2013.
+%\bibitem{bucket}
+
+%C. Fernando and S. Sojakka.
+%\textit{Pattern Recognition in a Bucket}.
+%In Advances in artificial life, pp 588–597. 2003.
+%\url{https://doi.org/10.1007/978-3-540-39432-7_63}
+
+%\bibitem{jaeger}
+%H. Jaeger. 
+%\textit{The "echo state" approach to analysing and training recurrent neural networks-with an erratum note}. 
+%Bonn, Germany: German National Research Center for Information Technology GMD Technical Report. 148. 2001.
+%\url{https://www.ai.rug.nl/minds/uploads/EchoStatesTechRep.pdf}
+
+%\bibitem{maass}
+%W. Maass, T. Natschläger and H. Markram. 
+%\textit{Real-time computing without stable states: a new framework for neural computation based on perturbations}. 
+%Neural Comput. 14(11):2531‐2560. 2002.
+%\url{https://doi.org/10.1162/089976602760407955}
+
+%\bibitem{explain memristor}
+%F. Corinto, M. Forti and L.O. Chua. \textit{Nonlinear circuits and systems with memristors: analogue computing via the flux-charge analysis method}. Springer. 2021. \url{https://doi.org/10.1007/978-3-030-55651-8}
+
+% \bibitem{Bernstein}
+% P.L. Bernstein, 
+% \textit{Capital Ideas : The Improbable Origins of Modern Wall Street}, 
+% Free Press, New York, 1992, p. 239-261.
+
+% \bibitem{BS}
+% F. Black,and M. Scholes,
+% \textit{The Pricing of Options and Corporate Liabilities},
+% Journal of Political Economy 81:3, 1973, p. 637–654.
+
+% \bibitem{Campbell}
+% J. Campbell, A. Lo and A. MacKinlay,
+% \textit{The Econometrics Of Financial Markets},
+% Princeton University Press, Princeton, 978-140-08-3021-3, 1997, p. 339-394.
+
+% \bibitem{Holy finance book}
+% R.H. Chan, Y.ZY. Guo, S.T. Lee and X. Li,
+% \textit{Financial Mathematics, Derivatives and Structured Products},
+% Springer, Singapore, 978-981-13-3696-6, 2019, p. 161–165.
+
+
+\end{thebibliography}
+
+\clearpage
+\section{Appendix} \label{appendix}
+\subsection{Moments of inertia} \label{moi}
+
+For both the moments of inertia the parallel axis theorem is used. The moment of inertia of the pendulum (rod), a tall cylinder, around point A is 
+$$I_r^A = I_r^B + m_r l^2_{AB} = \frac{1}{12} m_r(3r^2 + l^2_{AD}) + m_r l^2_{AB},$$
+where $m_r$ is the mass of the pendulum, \\
+$r$ is the radius of the pendulum and \\
+$l_{AB}$ is the distance between points A and B.
+
+The moment of inertia of the flywheel around point A is 
+$$I_f^A = I_f^C + m_f l^2_{AC} = \frac{1}{2} m_f R^2 + m_f l^2_{AC},$$
+where $m_f$ is the mass of the flywheel, \\
+$R$ is the radius of the flywheel and \\
+$l_{AC}$ is the distance between points A and C.
+
+Substituting these moments of inertia into (\ref{statespace}) we obtain
+$$
+\dot{x}(t) = 
+\begin{bmatrix}
+\dot{\theta} \\
+\ddot{\theta} \\
+\dot{\omega}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\dot{\theta} \\
+\frac{g \sin(\theta) (m_r l_{AB} + m_f l_{AC}) + u(t)}
+{m_f (0.5 R^2 + l_{AC}^2) + \frac{1}{12} m_r (3r^2 + l_{AD}^2) + m_r l_{AB}^2} \\
+\frac{u(t)}{I_f^C} - \ddot{\theta}
+\end{bmatrix}
+$$
+
+\subsection{DC motor torque vs rotational speed} \label{DC motor appendix}
+
+The torque that a DC motor can generate decreases as the rotational speed increases, see Figure \ref{DC motor linear}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Rotational speed},
+    ylabel={Torque},
+    axis lines=left,
+    xtick=\empty,
+    ytick=\empty
+]
+\addplot[domain=0:1, color=blue,]{-x+1};
+\end{axis}
+\end{tikzpicture}
+\caption{Torque vs rotational speed in a DC motor.}
+\label{DC motor linear}
+\end{figure}
+
+\subsection{Constants used in PD(P) controller} \label{constants PD(P) appendix}
+In Table \ref{constants PD(P)}, the constants that have been used to generate the data can be seen.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| p{5cm} | p{5cm} |}
+\hline
+Parameter & Value  \\
+\hline
+$\theta_{bias}$ &  -0.015  \\ 
+\hline
+$K_p$ &  65  \\ 
+\hline
+$K_d$ &  5  \\ 
+\hline
+$K_{\omega}$ &  0.015  \\ 
+\hline
+\end{tabular}
+\caption{The constants that are used in the test with the filter and PD(P) controller.}
+\label{constants PD(P)}
+\end{table}
+
+
+
+\subsection{Controller and Plant}
+We start with our design of the controller and system. A bus is used to connect the digital controller and the motorcycle. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Images/Digital controller and motorcycle.png}
+    \caption{Controller and Motorcycle structure.}
+    \label{Digital Controller and motorcyle}
+\end{figure}
+This is the structure of the Controller an Motorcycle which shows inputs from the motorcycle flow into the digital controller and the controller then sends an output to the motors on the motorcycle. 
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Images/Plant.png}
+    \caption{Smaller components connection to bus as input to the controller.}
+    \label{Motorcycle simulink}
+\end{figure}
+On the left side of the image we can see that the input of the motorcycle sends the information of 5 variables top to bottom: angular rate $\dot{\theta}$ Euler which is $\theta$ and status which tells us whether the IMU is calibrated or not.  The 4th block is the encoder, which counts the number of rotations of the flywheel which is needed, the 5th is Battery read tells us how much voltage the battery is able to send to the system. On the right-hand side we have 2 motors on the top motor M3 is the flywheel and it is connected to the digital controller it has a saturation of 255 the maximum number the system can handle and then it is connected via saturation to prevent any circuit malfunction due to high voltage. Lastly we have the M2 motor which is designed to move the bike back and forth. 
+
+
+
+\begin{figure}[H]
+       \centering
+       \includegraphics[width=1\linewidth]{Images/controller .png}
+       \caption{This Figure is the overall design of the logic board sensor data connection and controller.}
+       \label{Controller}
+\end{figure}
+This Figure shows how our digital controller is connected to a switch via a  chart on the bottom and it defines 4 stats:
+\begin{itemize}
+    \item Battery OK  
+    \item IMU Calibration
+    \item Upright
+\end{itemize}\\ When all the values are at a certain threshold we will see that all the lights turn green which switches the output from 0 to the output of the controller.
+
+
+
+
+
+\subsection{Internal structure of Funnel controller and PID}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Images/pid and funnel.png}
+    \caption{This Figure displays our over all structure of the controllers that we have implemented on the Self balancing bike.}
+    \label{Simulink PID +Funnel}
+\end{figure}
+
+The internal structure from top to bottom has the following:\\
+
+\begin{itemize}
+    \item Relative Degree 1 funnel 
+    \item Relative Degree 2 funnel 
+    \item PDP controller 
+\end{itemize}
+
+The following is a list of all the blocks used be aware that this is the list for the version 2024b it may be subjected to change in the preceding versions.The design for the Simulink model for PID controller can be found on [3],this may also be subjected to change for the self balancing motorcycle please look accordingly\\
+
+\begin{itemize}
+    \item Clock Block 
+    \item Sum Block 
+    \item Gain Block
+    \item Bus Selector
+    \item Matlab Function Block
+    \item Chart Block for Logic 
+    \item Constant blocks to be connected to various other blocks for Matlab functions and Summation blocks.
+    \item Imu sensor BNO055, Encoder 1 and battery reader motor M1 M2 DC Motor 
+\end{itemize}
+
+\begin{comment}
+
+\newpage
+\section*{Appendix} \label{appendix}
+
+
+
+
+
+
+
+
+
+\end{comment}
+\end{document}
